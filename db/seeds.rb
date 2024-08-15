@@ -7,3 +7,10 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+Todo.destroy_all
+puts 'Destroyed Todo items'
+
+Todo.create!(title: 'Create automated tests for Todo model and controller', status: "Not started", is_completed: false)
+Todo.create!(title: 'Create User Model and Controller', status: "Not started", is_completed: false)
+
+puts 'Created Todo items'
