@@ -6,12 +6,12 @@ class Api::V1::TodosController < ApplicationController
   end
   def show
     @todo = Todo.find(params[:id])
-    render json: @todos
+    render json: @todo
   end
   def create
     @todo = Todo.new(valid_params)
     if @todo.save
-      render json: @todo, status: 200
+      render json: @todo, status: 201
     else
       render json: @todo.errors, status: :unprocessable_entity
     end
