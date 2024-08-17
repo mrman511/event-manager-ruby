@@ -4,12 +4,10 @@ class Api::V1::TodosController < ApplicationController
     @todos = Todo.all
     render json: @todos
   end
-
   def show
     @todo = Todo.find(params[:id])
     render json: @todo, status: 200
   end
-
   def create
     @todo = Todo.new(valid_params)
     if @todo.save
@@ -27,7 +25,6 @@ class Api::V1::TodosController < ApplicationController
       render json: { error: "unable to update Todo" }, status: 500
     end
   end
-  
   def destroy
     @todo = Todo.find(params[:id])
     if @todo
@@ -37,9 +34,7 @@ class Api::V1::TodosController < ApplicationController
       render json: { error: "unable to destroy Todo" }, status: 500
     end
   end
-
   private
-
   def valid_params
     params.require(:todo).permit(:title, :status, :is_completed)
   end
