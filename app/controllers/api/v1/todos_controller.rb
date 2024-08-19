@@ -6,7 +6,11 @@ class Api::V1::TodosController < ApplicationController
   end
   def show
     @todo = Todo.find(params[:id])
+<<<<<<< HEAD
     render json: @todo
+=======
+    render json: @todo, status: 200
+>>>>>>> c0e1d3b83a03a1dc1ad83d802b4f8bd61122e73a
   end
   def create
     @todo = Todo.new(valid_params)
