@@ -1,3 +1,3 @@
 # README
 
-run lint test: bin/rubocop -f github      
+run lint test: bin/rubocop -f github 
