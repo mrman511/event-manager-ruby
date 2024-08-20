@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  email="bodner80@gmail.com"
+  let (:email) { "bodner80@gmail.com" }
   password="password"
   let(:user) {
-    User.create(email: email)
+    User.create(email: :email)
   }
 
   it 'raises ActiveRecord::RecordInvalid when no email is given' do
@@ -16,15 +16,21 @@ RSpec.describe User, type: :model do
   end
 
   it "raises when attempting to create second user with same email" do
-    expect { User.create(email: email).to raise_error(ActiveRecord::RecordInvalid) }
+    expect { User.create(email: :email).to raise_error(ActiveRecord::RecordInvalid) }
   end
 
   it "returns only 1 instance of given email after attempting to create a second" do
-    expect { User.where(email: email).count.to eq(1) }
+    expect { User.where(email: :email).count.to eq(1) }
   end
 
   it "removes a record from the database" do
     user.destroy
     expect { user.reload.to raise_error(ActiveRecord::RecordNotFound) }
+  end
+
+  it "converts email to lowercase" do
+    email=:email.upcase
+    user = User.create(email: email)
+    expect { user.email.to eq(email.downcase) }
   end
 end
