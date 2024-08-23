@@ -79,7 +79,7 @@ GEM
     bindex (0.8.1)
     bootsnap (1.18.4)
       msgpack (~> 1.2)
-    brakeman (6.1.2)
+    brakeman (6.2.1)
       racc
     builder (3.3.0)
     capybara (3.40.0)
@@ -130,6 +130,9 @@ GEM
     matrix (0.4.2)
     mini_mime (1.1.5)
     minitest (5.25.1)
+    minitest-rails (7.1.1)
+      minitest (~> 5.20)
+      railties (>= 7.1.0, < 8.0.0)
     msgpack (1.7.2)
     net-imap (0.4.14)
       date
@@ -315,6 +318,8 @@ DEPENDENCIES
   debug
   importmap-rails
   jbuilder
+  minitest
+  minitest-rails (~> 7.1.1)
   puma (>= 5.0)
   rails (~> 7.2.0)
   rubocop-rails-omakase
