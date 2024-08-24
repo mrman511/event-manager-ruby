@@ -89,7 +89,6 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     post todos_url, params: { todo: @valid_params }
     created_todo = JSON.parse(response.body)
     fetched_todo = Todo.find(created_todo["id"])
-
     assert_equal @valid_params[:title], fetched_todo.title
     assert_equal @valid_params[:status], fetched_todo.status
     assert_equal @valid_params[:is_completed], fetched_todo.is_completed
