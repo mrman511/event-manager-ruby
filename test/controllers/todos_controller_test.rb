@@ -4,12 +4,12 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
   @created_todo
   setup do
     @valid_params={
-      title: 'Valid Title',
-      status: 'created',
+      title: "Valid Title",
+      status: "created",
       is_completed: false
     }
     @invalid_params={
-      title: 'title for invalid',
+      title: "title for invalid",
       is_completed: false
     }
     @todo = Todo.create!(@valid_params)
@@ -56,7 +56,7 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     post todos_url, params: { todo: @valid_params }
     created_todo = JSON.parse(response.body)
     fetched_todo = Todo.find(created_todo["id"])
-    
+
     assert_equal @valid_params[:title], fetched_todo.title
     assert_equal @valid_params[:status], fetched_todo.status
     assert_equal @valid_params[:is_completed], fetched_todo.is_completed

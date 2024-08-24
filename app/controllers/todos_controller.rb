@@ -19,7 +19,7 @@ class TodosController < ApplicationController
       render json: todo.errors, status: :unprocessable_entity
     end
   end
-  
+
   private
 
   def valid_params
