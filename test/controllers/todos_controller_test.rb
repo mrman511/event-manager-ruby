@@ -167,6 +167,45 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     post todos_url, params: { todo: @valid_params }
     body = JSON.parse(response.body)
     assert(body["is_completed"].include? "is not included in the list")
+  test "#update should have response of :ok when given valid params" do
+    patch todo_url(@todo), params: { todo: @updated_params }
+    assert_response :ok
+  end
+
+  test "#update should update the todo in the database" do
+    patch todo_url(@todo), params: { todo: @updated_params }
+    fetched_todo = Todo.find(@todo.id)
+
+    assert_equal @updated_params[:title], fetched_todo.title
+    assert_equal @updated_params[:status], fetched_todo.status
+    assert_equal @updated_params[:is_completed], fetched_todo.is_completed
+  end
+
+  test "#update should return response :not_found when invalid todo is given" do
+    patch todo_url({ "id": 0 }), params: { todo: @updated_params }
+    assert_response :not_found
+  end
+
+  test "#update should return response of :error when only invalid params are given" do
+    invalid_param = { valid_param: false }
+    patch todo_url(@todo), params: { todo: invalid_param }
+    assert_response :error
+  end
+
+  test "#destroy should return response of :ok when valid todo is given" do
+    delete todo_url(@todo)
+    assert_response :ok
+  end
+
+  test "#destroy deletes the requested item form the database" do
+    id = @todo.id
+    delete todo_url(@todo)
+    assert_raises("ActiveRecord::RecordNotFound") { Todo.find(id) }
+  end
+
+  test "#destroy should return response :not_found when invalid Todo is given" do
+    delete todo_url({ "id": 0 })
+    assert_response :not_found
   end
 
   test "#update should have response of :ok when given valid params" do
