@@ -11,9 +11,12 @@ Todo.destroy_all
 puts "Destroyed Todo items"
 
 Todo.create!(title: "Create automated tests", status: "Not started", is_completed: false)
+puts "Created Todo item"
 Todo.create!(title: "Create User Model", status: "Not started", is_completed: false)
+puts "Created Todo item"
 
-puts "Created Todo items"
 
 User.destroy_all
+puts "Destroyed Users"
 User.create!(email: "bodner80@gmail.com", password: ENV["VALID_PASSWORD_TEST"])
+puts "Created User"
