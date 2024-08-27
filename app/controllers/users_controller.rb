@@ -24,6 +24,26 @@ class UsersController < ApplicationController
     render json: user.errors, status: :unprocessable_entity
   end
 
+  def update
+    user = User.find(params[:id])
+    if user and !valid_params.empty?
+      user.update!(valid_params)
+      render json: { message: "User updated" }, status: :ok
+      return
+    end
+    render json: user.errors, status: :unprocessable_entity
+  end
+
+  def destroy
+    user = User.find(params[:id])
+    if user
+      user.destroy
+      render json: { message: "User Destroyed" }, status: :ok
+      return
+    end
+    render json: user.errors, status: :unprocessable_entity
+  end
+
   private
 
   def valid_params
