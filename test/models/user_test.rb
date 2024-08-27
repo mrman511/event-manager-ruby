@@ -4,7 +4,7 @@ class UserTest < ActiveSupport::TestCase
   setup do
     @valid_attributes = {
       email: "valid@email.email",
-      password: ENV["VALID_PASSWORD_TEST"]
+      password: "V4LidP@ssw0rd"
     }
     @invalid_email = "invalid_email"
   end
@@ -40,12 +40,12 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "#password cannot be less than 8 characters" do
-    @valid_attributes[:password] = ENV["FOUR_CHARACTER_PASSWORD_TEST"]
+    @valid_attributes[:password] = "F@1l"
     assert_raises("ActiveRecord::RecordInvalid") { User.create!(@valid_attributes) }
   end
 
   test "#password cannot be longer than 40 characters" do
-    @valid_attributes[:password] = ENV["FOUR_CHARACTER_PASSWORD_TEST"] + "a" * 37
+    @valid_attributes[:password] = "F@1l" + "a" * 37
     assert_raises("ActiveRecord::RecordInvalid") { User.create!(@valid_attributes) }
   end
 
@@ -60,12 +60,12 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "#password must have one number" do
-    @valid_attributes[:password] = ENV["NO_NUM_PASSWORD_TEST"]
+    @valid_attributes[:password] = "nONumbeR$"
     assert_raises("ActiveRecord::RecordInvalid") { User.create!(@valid_attributes) }
   end
 
   test "#password must have one symbol" do
-    @valid_attributes[:password] = ENV["NO_SYMBOL_PASSWORD_TEST"]
+    @valid_attributes[:password] = "n0Symb0ls"
     assert_raises("ActiveRecord::RecordInvalid") { User.create!(@valid_attributes) }
   end
 end
