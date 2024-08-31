@@ -1,28 +1,25 @@
 class TodosController < ApplicationController
   protect_from_forgery with: :null_session
   def index
-    todos = Todo.all
-    render json: todos
+    render json: Todo.all
   end
 
   def show
-    todo = Todo.find(params[:id])
-    render json: todo
+    render json: Todo.find(params[:id])
   end
 
   def create
-    todo = Todo.create!(valid_params)
-    if todo.save
-      render json: todo, status: 200
+    todo = Todo.create(permitted_params)
+    if todo.valid?
+      render json: todo, status: :accepted
     else
-      debugger
       render json: todo.errors, status: :unprocessable_entity
     end
   end
 
   private
 
-  def valid_params
+  def permitted_params
     params.require(:todo).permit(:title, :status, :is_completed)
   end
 end
