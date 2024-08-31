@@ -24,10 +24,39 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
   end
 
-  test "#index should return an Array" do
+  test "#index should return an Array when multiple Todos exist" do
     get todos_url
     body = JSON.parse(response.body)
     assert_kind_of(Array, body)
+    assert(Todo.count > 1)
+  end
+
+  test "#index should return an Array when single Todo exists" do
+    Todo.destroy_all
+    Todo.create!(@valid_params)
+    get todos_url
+    body = JSON.parse(response.body)
+    assert_kind_of(Array, body)
+    assert(Todo.count == 1)
+  end
+
+  test "#index should return an empty Array when no Todos exists" do
+    Todo.destroy_all
+    get todos_url
+    body = JSON.parse(response.body)
+    assert_kind_of(Array, body)
+    assert(Todo.count == 0)
+  end
+
+  test "#index should return an array where all items can be retrieved from Todo Model" do
+    get todos_url
+    body = JSON.parse(response.body)
+    body.each do |todo|
+      fetched_todo = Todo.find(todo["id"])
+      assert_equal todo["title"], fetched_todo["title"]
+      assert_equal todo["status"], fetched_todo["status"]
+      assert_equal todo["is_completed"], fetched_todo["is_completed"]
+    end
   end
 
   test "#index should return an array where all items can be retrieved from Todo Model" do
@@ -73,16 +102,15 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     assert_equal @todo.is_completed, fetched_todo["is_completed"]
   end
 
+  test "#create should return :accepted with valid_params" do
+    post todos_url, params: { todo: @valid_params }
+    assert_response :accepted
+  end
+
   test "#create should create todo with valid params" do
     assert_difference("Todo.count") do
       post todos_url, params: { todo: @valid_params }
     end
-  end
-
-  test "#create should return a Hash" do
-    post todos_url, params: { todo: @valid_params }
-    body = JSON.parse(response.body)
-    assert_kind_of(Hash, body)
   end
 
   test "#create should responed with Todo that can be fetched from the database" do
@@ -94,9 +122,25 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     assert_equal @valid_params[:is_completed], fetched_todo.is_completed
   end
 
-  test "#create returns status :unprocessable_entity when given invalid params" do
-    post todos_url, params: { todo: @invalid_params }
-    assert_response :unprocessable_entity
+  test "#create returns key 'title' with array that includes 'can't be blank' with missing title" do
+    @valid_params.delete(:title)
+    post todos_url, params: { todo: @valid_params }
+    body = JSON.parse(response.body)
+    assert(body["title"].include? "can't be blank")
+  end
+
+  test "#create returns key 'status' with array that includes 'can't be blank' with missing title" do
+    @valid_params.delete(:status)
+    post todos_url, params: { todo: @valid_params }
+    body = JSON.parse(response.body)
+    assert(body["status"].include? "can't be blank")
+  end
+
+  test "#create returns key 'is_completed' with array that includes 'is not included in the list' with missing title" do
+    @valid_params.delete(:is_completed)
+    post todos_url, params: { todo: @valid_params }
+    body = JSON.parse(response.body)
+    assert(body["is_completed"].include? "is not included in the list")
   end
 
   test "#create should return :accepted with valid_params" do
