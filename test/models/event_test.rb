@@ -47,7 +47,7 @@ class EventTest < ActiveSupport::TestCase
   @min_accepted_valid_params[:starts]=DateTime.now()
   event = Event.create(@min_accepted_valid_params)
   assert(event.errors[:starts].include?("must occur in the future"))
-end
+  end
 
   test "#ends adds error 'can't be blank' to error.ends with no ends" do
     @min_accepted_valid_params.delete(:ends)
