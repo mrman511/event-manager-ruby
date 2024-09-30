@@ -24,9 +24,12 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
       ends: DateTime.now() + 1000.years,
       location: "Kiln of the First Flame"
     }
+<<<<<<< HEAD
     @non_permitted_params = {
       first_name: "Gwyn"
     }
+=======
+>>>>>>> 8c9a0cc (Created Event controller including routes for Index, show, and Create)
   end
 
   test "#Index returns response :ok" do
