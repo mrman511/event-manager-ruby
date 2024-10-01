@@ -18,6 +18,26 @@ class EventsController < ApplicationController
     end
   end
 
+  def update
+    event = Event.find(params[:id])
+    if event and !permitted_params.empty?
+      event.update!(permitted_params)
+      render json: event, status: :accepted
+    else
+      render json: event.errors, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    event = Event.find(params[:id])
+    if event
+      event.destroy
+      render json: { message: "event destroyed" }, status: :ok
+    else
+      render json: event.errors, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def permitted_params
