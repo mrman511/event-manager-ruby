@@ -24,12 +24,9 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
       ends: DateTime.now() + 1000.years,
       location: "Kiln of the First Flame"
     }
-<<<<<<< HEAD
     @non_permitted_params = {
       first_name: "Gwyn"
     }
-=======
->>>>>>> 8c9a0cc (Created Event controller including routes for Index, show, and Create)
   end
 
   test "#Index returns response :ok" do
@@ -138,72 +135,72 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
   # ##############
   # ### UPDATE ###
   # ##############
-  
+
   test "#update should have response of :ok when given valid params" do
     patch event_url(@base_event), params: @valid_event_params
     assert_response :accepted
   end
 
+  test "#update should update the event in the database" do
+    patch event_url(@base_event), params: @valid_event_params
+    fetched_event = Event.find(@base_event.id)
+    @valid_event_params.delete(:starts)
+    @valid_event_params.delete(:ends)
+    @valid_event_params.each do |key, value|
+      assert_equal value, fetched_event[key.to_s]
+    end
+  end
+
   test "#update should return response :accepted non permitted params present" do
-    params_with_non_permitted = @valid_params.merge(@non_permitted_params)
-    patch event_url(@base_event), params: { event: params_with_non_permitted }
+    params_with_non_permitted = @valid_event_params.merge(@non_permitted_params)
+    patch event_url(@base_event), params: params_with_non_permitted
     assert_response :accepted
   end
 
-  # test "#update should update the event in the database" do
-  #   patch event_url(@base_event), params: @valid_event_params
-  #   fetched_event = event.find(@base_event.id)
+  test "#update does not add non permitted params to updated event" do
+    params_with_non_permitted = @valid_event_params.merge(@non_permitted_params)
+    patch event_url(@base_event), params: params_with_non_permitted
+    fetched_event = Event.find(@base_event.id)
+    @non_permitted_params.each do |key|
+      assert_nil fetched_event[key]
+    end
+  end
 
-  #   assert_equal @updated_params[:title], fetched_event.title
-  #   assert_equal @updated_params[:status], fetched_event.status
-  #   assert_equal @updated_params[:is_completed], fetched_event.is_completed
-  # end
+  test "#update should return response :not_found with invalid event" do
+    patch event_url({ "id": 0 }), params: @valid_event_params
+    assert_response :not_found
+  end
 
-  # test "#update does not add non permitted params to updated event" do
-  #   params_with_non_permitted = @valid_params.merge(@non_permitted_params)
-  #   patch event_url(@base_event), params: { event: params_with_non_permitted }
-  #   fetched_event = event.find(@base_event.id)
+  test "#update should return response of :unprocessable_entity with no params" do
+    patch event_url(@base_event), params: {}
+    assert_response :unprocessable_entity
+  end
 
-  #   @non_permitted_params.each do |key|
-  #     assert_nil fetched_event[key]
-  #   end
-  # end
-
-  # test "#update should return response :not_found with invalid event" do
-  #   patch event_url({ "id": 0 }), params: @valid_event_params
-  #   assert_response :not_found
-  # end
-
-  # test "#update should return response of :bad_request with no params" do
-  #   patch event_url(@base_event), params: {}
-  #   assert_response :bad_request
-  # end
-
-  # test "#update should return error ActionController::UrlGenerationError with no event id" do
-  #   assert_raises("ActionController::UrlGenerationError") { patch event_url }
-  # end
+  test "#update should raise error with no event id" do
+    assert_raises { patch event_url }
+  end
 
   # ###############
   # ### DESTROY ###
   # ###############
 
-  # test "#destroy should return response of :ok when valid event is given" do
-  #   delete event_url(@base_event)
-  #   assert_response :ok
-  # end
+  test "#destroy should return response of :ok when valid event is given" do
+    delete event_url(@base_event)
+    assert_response :ok
+  end
 
-  # test "#destroy deletes the requested item form the database" do
-  #   id = @base_event.id
-  #   delete event_url(@base_event)
-  #   assert_raises("ActiveRecord::RecordNotFound") { event.find(id) }
-  # end
+  test "#destroy deletes the requested item form the database" do
+    id = @base_event.id
+    delete event_url(@base_event)
+    assert_raises() { Event.find(id) }
+  end
 
-  # test "#destroy should return response :not_found when invalid event is given" do
-  #   delete event_url({ "id": 0 })
-  #   assert_response :not_found
-  # end
+  test "#destroy should return response :not_found when invalid event is given" do
+    delete event_url({ "id": 0 })
+    assert_response :not_found
+  end
 
-  # test "#destroy should return error ActionController::UrlGenerationError know yet with no event id" do
-  #   assert_raises("ActionController::UrlGenerationError") { delete event_url }
-  # end
+  test "#destroy should raise error with no event id" do
+    assert_raises("ActionController::UrlGenerationError") { delete event_url }
+  end
 end
