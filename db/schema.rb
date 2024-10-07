@@ -21,8 +21,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_02_140312) do
     t.string "location"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "host_id", null: false
-    t.index ["host_id"], name: "index_events_on_host_id"
+    t.integer "host_id"
+    # t.index ["host_id"], name: "index_events_on_host_id"
   end
 
   create_table "hosts", force: :cascade do |t|
@@ -44,7 +44,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_02_140312) do
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_users_on_email", unique: true
+    # t.index ["email"], name: "index_users_on_email", unique: true
   end
 
   add_foreign_key "events", "hosts"

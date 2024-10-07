@@ -1,5 +1,5 @@
 class Event < ApplicationRecord
-  belongs_to :host
+  belongs_to :host, optional: true
   validates :title, presence: true, length: { minimum: 8, maximum: 150 }
   validates :starts, presence: true
   validates :ends, presence: true
