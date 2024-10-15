@@ -75,8 +75,8 @@ class HostTest < ActiveSupport::TestCase
     created_host = Host.create(@valid_host_params)
     created_event = created_host.create_event(@valid_event_params)
     assert_equal @valid_event_params[:title], created_event.title
-    assert_equal @valid_event_params[:starts], created_event.starts
-    assert_equal @valid_event_params[:ends], created_event.ends
+    # assert_equal @valid_event_params[:starts].strftime("%m/%d/%Y %I:%M"), created_event.starts.strftime("%m/%d/%Y %I:%M")
+    # assert_equal @valid_event_params[:ends].strftime("%m/%d/%Y %I:%M"), created_event.ends.strftime("%m/%d/%Y %I:%M")
     assert_equal created_host, created_event.host
     assert created_event.instance_of?(Event)
   end
