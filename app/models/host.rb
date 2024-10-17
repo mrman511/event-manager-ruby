@@ -1,5 +1,6 @@
 class Host < ApplicationRecord
   has_many :events
+  validates :name, presence: true
 
   def create_event(event_params)
     if event_params

@@ -48,6 +48,13 @@ class HostTest < ActiveSupport::TestCase
     }
   end
 
+  test "#create raises ActiveRecord::RecordInvalid without name provided" do
+    @valid_host_params.delete(:name)
+    assert_raises(ActiveRecord::RecordInvalid) do
+      Host.create!(@valid_host_params)
+    end
+  end
+
   test "#create creates a host that can be searched for in the database with valid params" do
     created_host = Host.create(@valid_host_params)
     fetched_host = Host.find(created_host.id)
