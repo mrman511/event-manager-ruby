@@ -70,7 +70,7 @@ class HostsControllerTest < ActionDispatch::IntegrationTest
     body.each do |host|
       host["events"].each do |event|
         fetched_host = Event.find(event["id"])
-        assert_equal event['title'], fetched_host.title
+        assert_equal event["title"], fetched_host.title
       end
     end
   end
@@ -78,12 +78,12 @@ class HostsControllerTest < ActionDispatch::IntegrationTest
   # ################
   # ##### Show #####
   # ################
-  
+
   test "#show should return response :success with valid host id" do
     get host_url(@base_host.id)
     assert_response :success
   end
-  
+
   test "#show should return requested host" do
     get host_url(@base_host.id)
     body = JSON.parse(response.body)
@@ -110,9 +110,11 @@ class HostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :accepted
   end
 
-  test "#create should return response :unprocessible_entitry without valid params" do
-    post hosts_url
-    assert_response :accepted
+  test "#create return error for :name 'can't be blank' without name" do
+    @valid_host_params.delete(:name)
+    post hosts_url, params: @valid_host_params
+    body = JSON.parse(response.body)
+    assert body["name"].include?("can't be blank")
   end
 
   test "#create should add a Host with valid params" do
@@ -130,24 +132,10 @@ class HostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal created_host["name"], fetched_host.name
   end
 
-  # test "#create returns status :unprocessable_entity when given only invalid params" do
-  #   post hosts_url, params: @invalid_host_params
-  #   assert_response :unprocessable_entity
-  # end
-
-  # test "#create returns key 'title' with array that includes 'can't be blank' with missing title" do
-  #   @valid_host_params.delete(:title)
-  #   post hosts_url, params: @valid_host_params
-  #   body = JSON.parse(response.body)
-  #   assert(body["title"].include? "can't be blank")
-  # end
-
-  # test "#create returns key 'starts' with array that includes 'can't be blank' with missing status" do
-  #   @valid_host_params.delete(:starts)
-  #   post hosts_url, params: @valid_host_params
-  #   body = JSON.parse(response.body)
-  #   assert(body["starts"].include? "can't be blank")
-  # end
+  test "#create returns status :unprocessable_entity when given only invalid params" do
+    post hosts_url, params: @invalid_host_params
+    assert_response :unprocessable_entity
+  end
 
   test "#create returns response :accepted when valid_host_params includes non_permitted_params" do
     valid_plus_non_permitted_params=@valid_host_params.merge(@non_permitted_params)
