@@ -151,4 +151,79 @@ class HostsControllerTest < ActionDispatch::IntegrationTest
       assert_nil body[key.to_s]
     end
   end
+
+  # ##############
+  # ### UPDATE ###
+  # ##############
+
+  test "#update should have response of :ok when given valid params" do
+    patch host_url(@base_host), params: @valid_host_params
+    assert_response :accepted
+  end
+
+  test "#update should update the host when title is changed in the database" do
+    assert_not_equal @base_host.name, @valid_host_params[:name]
+    patch host_url(@base_host), params: @valid_host_params
+    fetched_host = Host.find(@base_host.id)
+    assert_equal @valid_host_params[:name], fetched_host.name
+  end
+
+  test "#update should have response of :not_modified when given valid params equal to current host" do
+    new_old_params = { name: @base_host.name }
+    patch host_url(@base_host), params: new_old_params
+    assert_response :not_modified
+  end
+
+  test "#update should return response :accepted non permitted params present" do
+    params_with_non_permitted = @valid_host_params.merge(@non_permitted_params)
+    patch host_url(@base_host), params: params_with_non_permitted
+    assert_response :accepted
+  end
+
+  test "#update does not add non permitted params to updated host" do
+    params_with_non_permitted = @valid_host_params.merge(@non_permitted_params)
+    patch host_url(@base_host), params: params_with_non_permitted
+    fetched_host = Host.find(@base_host.id)
+    @non_permitted_params.each do |key|
+      assert_nil fetched_host[key]
+    end
+  end
+
+  test "#update should return response :not_found with invalid host" do
+    patch host_url({ "id": 0 }), params: @valid_host_params
+    assert_response :not_found
+  end
+
+  test "#update should return response of :not_modified with no params" do
+    patch host_url(@base_host), params: {}
+    assert_response :not_modified
+  end
+
+  test "#update should raise error with no host id" do
+    assert_raises(ActionController::UrlGenerationError) { patch host_url }
+  end
+
+  # # ###############
+  # # ### DESTROY ###
+  # # ###############
+
+  test "#destroy should return response of :ok when valid host is given" do
+    delete host_url(@base_host)
+    assert_response :ok
+  end
+
+  test "#destroy deletes the requested host form the database" do
+    id = @base_host.id
+    delete host_url(@base_host)
+    assert_raises() { Event.find(id) }
+  end
+
+  test "#destroy should return response :not_found when invalid host is given" do
+    delete host_url({ "id": 0 })
+    assert_response :not_found
+  end
+
+  test "#destroy should raise error with no event id" do
+    assert_raises(ActionController::UrlGenerationError) { delete host_url }
+  end
 end
