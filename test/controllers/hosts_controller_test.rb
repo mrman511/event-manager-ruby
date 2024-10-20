@@ -215,7 +215,7 @@ class HostsControllerTest < ActionDispatch::IntegrationTest
   test "#destroy deletes the requested host form the database" do
     id = @base_host.id
     delete host_url(@base_host)
-    assert_raises(ActionController::UrlGenerationError) { Event.find(id) }
+    assert_raises(ActiveRecord::RecordNotFound) { Host.find(id) }
   end
 
   test "#destroy should return response :not_found when invalid host is given" do
