@@ -30,23 +30,23 @@ class Host < ApplicationRecord
 
   private
 
-  def add_new_event()
+  def add_new_event
     if self.events.count === 0
-      self.events = [@new_event]
+      self.events = [ @new_event ]
     else
       self.events.push(@new_event)
     end
   end
 
-  def can_validate_created_event()
+  def can_validate_created_event
     self.events.each do |comparison_event|
       validate_new_event_starts_time(comparison_event)
       validate_current_event_start_times(comparison_event)
     end
     if @new_event.valid?
-      return true
+      true
     else
-      return false
+      false
     end
   end
 
