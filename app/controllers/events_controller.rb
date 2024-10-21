@@ -10,12 +10,15 @@ class EventsController < ApplicationController
   end
 
   def create
-    event = Event.create(permitted_params)
-    if event.valid?
+    host = Host.find(params[:host])
+    if host
+      event = host.create_event(permitted_params)
       render json: event, status: :accepted
     else
       render json: event.errors, status: :unprocessable_entity
     end
+    # end
+    # if event.valid?
   end
 
   def update
@@ -41,6 +44,6 @@ class EventsController < ApplicationController
   private
 
   def permitted_params
-    params.permit(:title, :tagline, :description, :postscript, :starts, :ends, :location)
+    params[:event].permit(:title, :tagline, :description, :postscript, :starts, :ends, :location)
   end
 end
