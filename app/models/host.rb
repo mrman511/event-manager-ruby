@@ -5,10 +5,12 @@ class Host < ApplicationRecord
   def create_event(event_params)
     if event_params
       event_params["host"] = self
-      new_event = Event.new(event_params)
-      validate_created_event(new_event)
-      add_event(new_event)
-      return new_event
+      @new_event = Event.new(event_params)
+      if can_validate_created_event()
+        @new_event.save!
+        add_new_event()
+      end
+      return @new_event
     end
     raise Exception.new "Event params are required"
   end
@@ -28,30 +30,34 @@ class Host < ApplicationRecord
 
   private
 
-  def add_event(new_event)
+  def add_new_event()
     if self.events.count === 0
-      self.events = [ new_event ]
+      self.events = [@new_event]
     else
-      self.events.push(new_event)
+      self.events.push(@new_event)
     end
   end
 
-  def validate_created_event(new_event)
+  def can_validate_created_event()
     self.events.each do |comparison_event|
-      validate_new_event_starts_time(new_event, comparison_event)
-      validate_current_event_start_times(new_event, comparison_event)
+      validate_new_event_starts_time(comparison_event)
+      validate_current_event_start_times(comparison_event)
     end
-    new_event.save!
+    if @new_event.valid?
+      return true
+    else
+      return false
+    end
   end
 
-  def validate_new_event_starts_time(new_event, comparison_event)
-    if new_event.starts >= comparison_event.starts && new_event.starts < comparison_event.ends
+  def validate_new_event_starts_time(comparison_event)
+    if @new_event.starts >= comparison_event.starts && @new_event.starts < comparison_event.ends
       raise Exception.new "Added event conflicts with another hosted Event"
     end
   end
 
-  def validate_current_event_start_times(new_event, comparison_event)
-    if comparison_event.starts >= new_event.starts && comparison_event.starts < new_event.ends
+  def validate_current_event_start_times(comparison_event)
+    if comparison_event.starts >= @new_event.starts && comparison_event.starts < @new_event.ends
       raise Exception.new "Added event conflicts with another hosted Event"
     end
   end

@@ -74,8 +74,16 @@ class HostTest < ActiveSupport::TestCase
   test "#create_event adds an event to a hosts events when a host with no events adds an event" do
     created_host = Host.create(@valid_host_params)
     assert_difference("created_host.events.length") do
-      created_host.create_event(@valid_event_params)
+      event = created_host.create_event(@valid_event_params)
     end
+  end
+
+  test "create_event returns event errors raised by Event model" do
+    @valid_event_params.delete(:title)
+    created_host = Host.create(@valid_host_params)
+    event = created_host.create_event(@valid_event_params)
+    assert event.errors[:title].include?("can't be blank")
+    assert event.errors[:title].include?("is too short (minimum is 8 characters)")
   end
 
   test "#create_event returns an event with valid params with the host called on as the host" do
