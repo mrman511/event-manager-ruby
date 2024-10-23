@@ -209,30 +209,31 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
   # ### DESTROY ###
   # ###############
 
-  # test "#destroy should return response of :ok when valid event is given" do
-  #   delete event_url(@base_event)
-  #   assert_response :ok
-  # end
+  test "#destroy should return response of :ok when valid event is given" do
+    delete event_url(@base_event)
+    assert_response :ok
+  end
 
-  # test "#destroy deletes the requested item form the database" do
-  #   id = @base_event.id
-  #   delete event_url(@base_event)
-  #   assert_raises(ActiveRecord::RecordNotFound) { Event.find(id) }
-  # end
+  test "#destroy deletes the requested item form the database" do
+    id = @base_event.id
+    delete event_url(@base_event)
+    assert_raises(ActiveRecord::RecordNotFound) { Event.find(id) }
+  end
 
-  # test "#destroy removes the event from a hosts events" do
-  #   event = @base_host.create_event(@valid_event_params)
-  #   event_id = event.id
-  #   delete event_url(event)
-  #   @base_host.events.each do |comparison_event|
-  #     assert_not_equal event_id, comparison_event.id
-  #   end
-  # end
+  test "#destroy removes the event from a hosts events" do
+    event = @base_host.create_event(@valid_event_params)
+    event_id = event.id
+    delete event_url(event)
+    fetched_host = Host.find(@base_host.id)
+    fetched_host.events.each do |comparison_event|
+      assert_not_equal event_id, comparison_event.id
+    end
+  end
 
-  # test "#destroy should return response :bad_request when invalid event is given" do
-  #   delete event_url({ "id": 0 })
-  #   assert_response :bad_request
-  # end
+  test "#destroy should return response :bad_request when invalid event is given" do
+    delete event_url({ "id": 0 })
+    assert_response :bad_request
+  end
 
   test "#destroy should raise error with no event id" do
     assert_raises(ActionController::UrlGenerationError) { delete event_url }
