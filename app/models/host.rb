@@ -20,7 +20,7 @@ class Host < ApplicationRecord
       raise Exception.new "No event requested for removal"
     end
     self.events.each do |comparison_event|
-      if comparison_event.id === event_id
+      if comparison_event.id == event_id.to_i
         comparison_event.destroy()
         return
       end
@@ -31,7 +31,7 @@ class Host < ApplicationRecord
   private
 
   def add_new_event
-    if self.events.count === 0
+    if self.events.count == 0
       self.events = [ @new_event ]
     else
       self.events.push(@new_event)
