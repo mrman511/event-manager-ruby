@@ -81,7 +81,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
 
   # ##############
   # ### CREATE ###
-  # ##############  
+  # ##############
 
   test "#create should return response :accepted with valid params" do
     post events_url, params: { event: @valid_event_params, host: @base_host.id }
@@ -89,7 +89,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "#create should return response of :bad_request with no params" do
-    post events_url, params: { }
+    post events_url, params: {}
     assert_response :bad_request
   end
 
@@ -197,7 +197,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "#update should return response of :unprocessable_entity with no params" do
-    patch event_url(@base_event), params: { }
+    patch event_url(@base_event), params: {}
     assert_response :unprocessable_entity
   end
 
