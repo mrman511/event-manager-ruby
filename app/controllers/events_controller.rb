@@ -10,15 +10,17 @@ class EventsController < ApplicationController
   end
 
   def create
-    host = Host.find(params[:host])
-    if host
-      event = host.create_event(permitted_params)
-      render json: event, status: :accepted
+    host = Host.find_by_id(params[:host])
+    if !host || permitted_params.empty?
+      render json: { message: "invalid request" }, status: :bad_request
     else
-      render json: event.errors, status: :unprocessable_entity
+      event = host.create_event(permitted_params)
+      if event.errors.count == 0
+        render json: event, status: :accepted
+      else
+        render json: event.errors, status: :unprocessable_entity
+      end
     end
-    # end
-    # if event.valid?
   end
 
   def update
@@ -32,18 +34,23 @@ class EventsController < ApplicationController
   end
 
   def destroy
-    event = Event.find(params[:id])
+    event = Event.find_by_id(params[:id])
     if event
-      event.destroy
+      host = Host.find(event.host_id)
+      host.delete_event(params[:id])
       render json: { message: "event destroyed" }, status: :ok
     else
-      render json: event.errors, status: :unprocessable_entity
+      render json: { message: "invalid request" }, status: :bad_request
     end
   end
 
   private
 
   def permitted_params
-    params[:event].permit(:title, :tagline, :description, :postscript, :starts, :ends, :location)
+    if params[:event]
+      params[:event].permit(:title, :tagline, :description, :postscript, :starts, :ends, :location)
+    else
+      []
+    end
   end
 end
