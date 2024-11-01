@@ -1,5 +1,7 @@
 class Host < ApplicationRecord
   has_many :events
+  has_many :hostings
+  has_many :users, through: :hostings
   validates :name, presence: true
 
   def create_event(event_params)

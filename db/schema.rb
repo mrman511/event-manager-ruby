@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_02_140312) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_28_220602) do
   create_table "events", force: :cascade do |t|
     t.string "title"
     t.string "tagline"
@@ -22,7 +22,16 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_02_140312) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "host_id"
-    # t.index ["host_id"], name: "index_events_on_host_id"
+    t.index ["host_id"], name: "index_events_on_host_id"
+  end
+
+  create_table "hostings", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "host_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["host_id"], name: "index_hostings_on_host_id"
+    t.index ["user_id"], name: "index_hostings_on_user_id"
   end
 
   create_table "hosts", force: :cascade do |t|
@@ -44,8 +53,10 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_02_140312) do
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    # t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["email"], name: "index_users_on_email"
   end
 
   add_foreign_key "events", "hosts"
+  add_foreign_key "hostings", "hosts"
+  add_foreign_key "hostings", "users"
 end

@@ -45,6 +45,7 @@ class HostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "#index should return an Array when single Host exists" do
+    Hosting.destroy_all
     Event.destroy_all
     Host.destroy_all
     Host.create!(@valid_host_params)
@@ -55,6 +56,7 @@ class HostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "#index should return an empty Array when no Hosts exists" do
+    Hosting.destroy_all
     Event.destroy_all
     Host.destroy_all
     get hosts_url
@@ -124,6 +126,7 @@ class HostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "#create should responed with Host that can be fetched from the database" do
+    Hosting.destroy_all
     Event.destroy_all
     Host.destroy_all
     post hosts_url, params: @valid_host_params
