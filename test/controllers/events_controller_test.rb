@@ -2,7 +2,8 @@ require "test_helper"
 
 class EventsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @base_host = Host.create({ name: "Chosen Undead" })
+    @base_user = User.create({ email: "chosen@undead.org", password: "V@l1dPa5$" })
+    @base_host = Host.create({ name: "Chosen Undead", users: [ @base_user ] })
     @base_event = @base_host.create_event({
       title: "Fill the Lordvessel",
       tagline: "Gather the lord souls",

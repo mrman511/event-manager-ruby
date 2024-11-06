@@ -8,12 +8,12 @@ class HostsController < ApplicationController
   end
 
   def create
-    host = Host.new(permitted_params)
-    if host.valid?
-      host.save()
-      render json: host, status: :accepted
+    if !formatted_params
+      render status: :bad_request
     else
-      render json: host.errors, status: :unprocessable_entity
+      host = Host.new(formatted_params)
+      host.save(validate: false)
+      render json: host, status: :accepted
     end
   end
 
@@ -21,7 +21,7 @@ class HostsController < ApplicationController
     host = Host.find(params[:id])
     if host
       if has_update(host)
-        host.update!(permitted_params)
+        host.update!(update_params)
         render json: host, status: :accepted
       else
         render json: host, status: :not_modified
@@ -34,6 +34,7 @@ class HostsController < ApplicationController
   def destroy
     host = Host.find(params[:id])
     if host
+      host.users = []
       host.destroy
       render json: { message: "host destroyed" }, status: :ok
     else
@@ -55,6 +56,18 @@ class HostsController < ApplicationController
   end
 
   def permitted_params
+    params.permit(:name, :user_id)
+  end
+
+  def update_params
     params.permit(:name)
+  end
+
+  def formatted_params
+    if !permitted_params[:name] || !permitted_params[:name]
+      return nil
+    end
+    host_user = User.find(permitted_params[:user_id])
+    { name: permitted_params[:name], users: [ host_user ] }
   end
 end

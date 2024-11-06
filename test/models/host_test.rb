@@ -22,11 +22,15 @@ class HostTest < ActiveSupport::TestCase
       ends: DateTime.now() + 4.hours
     }
 
+    @dynasty_user = User.create!(email: "mohg@moghwyndynasty.org", password: "V@l1dPa$5")
+
     @valid_host_params = {
-      name: "Mohgwyn Dynasty"
+      name: "Mohgwyn Dynasty",
+      users: [ @dynasty_user ]
     }
 
-    @base_host = Host.create({ name: "Redmanes" })
+    @redmanes_user = User.create!({ email: "witch_hunter_jiren@yahoo.ca", password: "V@l1dPa$5" })
+    @base_host = Host.create({ name: "Redmanes", users: [ @redmanes_user ] })
     @base_event = Event.create({
       host: @base_host,
       title: "Kill the Graven Witch",
@@ -48,6 +52,45 @@ class HostTest < ActiveSupport::TestCase
     }
   end
 
+  test "#create raises ActiveRecord::RecordInvalid when no users provided" do
+    @valid_host_params.delete(:users)
+    assert_raises(ActiveRecord::RecordInvalid) do
+      host = Host.create!(@valid_host_params)
+    end
+  end
+
+  test "#create does not create a new User when user is added to new host" do
+    assert_difference("User.count", 0) do
+      Host.create!(@valid_host_params)
+    end
+  end
+
+  test "#create raises ActiveRecord::RecordInvalid empty users provided" do
+    @valid_host_params[:users] = []
+    assert_raises(ActiveRecord::RecordInvalid) do
+      Host.create!(@valid_host_params)
+    end
+  end
+
+  test "#create raises ActiveRecord::AssociationTypeMismatch invalid users provided" do
+    @valid_host_params[:users] = [ 0 ]
+    assert_raises(ActiveRecord::AssociationTypeMismatch) do
+      Host.create!(@valid_host_params)
+    end
+  end
+
+  test "#create raises ActiveRecord::AssociationTypeMismatch different model instance provided as users" do
+    @valid_host_params[:users] = [ Host.first ]
+    assert_raises(ActiveRecord::AssociationTypeMismatch) do
+      Host.create!(@valid_host_params)
+    end
+  end
+
+  test "#create adds a user to users that is retrieveable from the database" do
+    created_host = Host.create!(@valid_host_params)
+    assert User.find(created_host.users.first.id)
+  end
+
   test "#create raises ActiveRecord::RecordInvalid without name provided" do
     @valid_host_params.delete(:name)
     assert_raises(ActiveRecord::RecordInvalid) do
@@ -61,9 +104,9 @@ class HostTest < ActiveSupport::TestCase
     assert_equal created_host.name, fetched_host.name
   end
 
-  # ##################
-  # ## CREATE_EVENT ##
-  # ##################
+  #   # ##################
+  #   # ## CREATE_EVENT ##
+  #   # ##################
 
   test "#create_event creates a new event with valid_params" do
     assert_difference("Event.count") do
@@ -120,9 +163,9 @@ class HostTest < ActiveSupport::TestCase
     assert_raises(Exception) { @base_host.create_event() }
   end
 
-  # ##################
-  # ## DELETE_EVENT ##
-  # ##################
+  # ################
+  # # DELETE_EVENT #
+  # ################
 
   test "#delete_event deletes an event with valid hosted event id" do
     created_event = @base_host.create_event(@base_host_event_params)

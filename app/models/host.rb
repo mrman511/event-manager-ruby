@@ -2,7 +2,10 @@ class Host < ApplicationRecord
   has_many :events
   has_many :hostings
   has_many :users, through: :hostings
+
   validates :name, presence: true
+  # validates :users, presence: true
+  validate :validate_users_not_empty
 
   def create_event(event_params)
     if event_params
@@ -31,6 +34,12 @@ class Host < ApplicationRecord
   end
 
   private
+
+  def validate_users_not_empty
+    if !self.users or self.users.empty?
+      errors.add(:users, "User required to create host")
+    end
+  end
 
   def add_new_event
     if self.events.count == 0
