@@ -30,6 +30,7 @@ class HostTest < ActiveSupport::TestCase
     }
 
     @redmanes_user = User.create!({ email: "witch_hunter_jiren@yahoo.ca", password: "V@l1dPa$5" })
+    @redmanes_user_2 = User.create!({ email: "freyja@yahoo.ca", password: "V@l1dPa$5" })
     @base_host = Host.create({ name: "Redmanes", users: [ @redmanes_user ] })
     @base_event = Event.create({
       host: @base_host,
@@ -187,5 +188,34 @@ class HostTest < ActiveSupport::TestCase
 
   test "#delete_event raises Exception with invalid params provided" do
     assert_raises(Exception) { @base_host.delete_event(5) }
+  end
+
+  # ################
+  # ### Add User ###
+  # ################
+
+  test "#add_user adds a user to host users with valid user" do
+    initial_count = @base_host.users.count
+    @base_host.add_user(@redmanes_user_2)
+    assert_equal @base_host.users.count, initial_count + 1
+  end
+
+  test "#add_user raises expception when no user provided" do
+    assert_raises(Exception) do
+      @base_host.add_user()
+    end
+  end
+
+  test "#add_user raises expception when non user instance provided" do
+    new_host = Host.create(@valid_host_params)
+    assert_raises(Exception) do
+      @base_host.add_user(new_host)
+    end
+  end
+
+  test "#add_user raises expception when trying to add user that already exists in users" do
+    assert_raises(Exception) do
+      @base_host.add_user(@base_host.users.first)
+    end
   end
 end

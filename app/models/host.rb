@@ -7,6 +7,15 @@ class Host < ApplicationRecord
   # validates :users, presence: true
   validate :validate_users_not_empty
 
+  def add_user(new_user)
+    if new_user && new_user.instance_of?(User)
+      validate_unique_user(new_user)
+      self.users.push(new_user)
+    else
+      raise Exception.new "No valid user provided"
+    end
+  end
+
   def create_event(event_params)
     if event_params
       event_params["host"] = self
@@ -34,6 +43,12 @@ class Host < ApplicationRecord
   end
 
   private
+
+  def validate_unique_user(new_user)
+    if self.users.any? { |comparison_user| comparison_user.id == new_user.id }
+      raise Exception.new "User is already a host"
+    end
+  end
 
   def validate_users_not_empty
     if !self.users or self.users.empty?
