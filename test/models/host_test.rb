@@ -29,9 +29,10 @@ class HostTest < ActiveSupport::TestCase
       users: [ @dynasty_user ]
     }
 
+    @redmanes_leader = User.create!({ email: "starscurge@hotmail.com", password: "V@l1dPa$5"  })
     @redmanes_user = User.create!({ email: "witch_hunter_jiren@yahoo.ca", password: "V@l1dPa$5" })
     @redmanes_user_2 = User.create!({ email: "freyja@yahoo.ca", password: "V@l1dPa$5" })
-    @base_host = Host.create({ name: "Redmanes", users: [ @redmanes_user ] })
+    @base_host = Host.create({ name: "Redmanes", users: [ @redmanes_leader, @redmanes_user ] })
     @base_event = Event.create({
       host: @base_host,
       title: "Kill the Graven Witch",
@@ -218,4 +219,39 @@ class HostTest < ActiveSupport::TestCase
       @base_host.add_user(@base_host.users.first)
     end
   end
+
+  # ###################
+  # ### Remove User ###
+  # ###################
+
+  test "#remove_user removes a user from a hosts users" do
+    initial_count = @base_host.users.count
+    @base_host.remove_user(@redmanes_user)
+    assert_equal @base_host.users.count, initial_count - 1
+  end
+
+  test "#remove_user raises Exception when called with a nonuser argument" do
+    assert_raises (Exception) { 
+      @base_host.remove_user({ type: "Non User" }) 
+    }
+  end
+
+  test "#remove_user raises Exception when called with a User not in users" do
+    assert_raises (Exception) { 
+      @base_host.remove_user(@redmanes_user_2) 
+    }
+  end
+
+  test "#remove_user raises Exception when attempting to remove the final user" do
+    @base_host.users.each do |user|
+      if @base_host.users.count == 1
+        assert_raises(Exception){
+          @base_host.remove_user(user)
+        }
+      else
+        @base_host.remove_user(user)
+      end
+    end
+  end
+
 end

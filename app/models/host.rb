@@ -16,6 +16,14 @@ class Host < ApplicationRecord
     end
   end
 
+  def remove_user(removee)
+    hosting = validate_remove_user(removee)
+    if self.users.count == 1
+      raise Exception.new "Cannot delete the last user from host"
+    end
+    hosting.destroy()
+  end
+
   def create_event(event_params)
     if event_params
       event_params["host"] = self
@@ -43,6 +51,18 @@ class Host < ApplicationRecord
   end
 
   private
+
+  def validate_remove_user(removee)
+    if removee && removee.instance_of?(User)
+      self.hostings.each do |hosting, i|
+        if hosting.user_id == removee.id
+          return hosting
+        end
+      end
+      raise Exception.new "User is not a member of host users"
+    end
+    raise Exception.new "Invalid user provided"
+  end
 
   def validate_unique_user(new_user)
     if self.users.any? { |comparison_user| comparison_user.id == new_user.id }
