@@ -53,6 +53,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "#index should return an Array when single Event exists" do
+    Invitation.destroy_all
     Event.destroy_all
     Event.create!(@valid_event_params)
     get events_url
@@ -62,6 +63,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "#index should return an empty Array when no events exists" do
+    Invitation.destroy_all
     Event.destroy_all
     get events_url
     body = JSON.parse(response.body)

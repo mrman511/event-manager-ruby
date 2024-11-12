@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_28_220602) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_12_030535) do
   create_table "events", force: :cascade do |t|
     t.string "title"
     t.string "tagline"
@@ -40,6 +40,17 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_28_220602) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "invitations", force: :cascade do |t|
+    t.boolean "attending"
+    t.integer "max_guests"
+    t.integer "sent_by_id"
+    t.integer "event_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_invitations_on_event_id"
+    t.index ["sent_by_id"], name: "index_invitations_on_sent_by_id"
+  end
+
   create_table "todos", force: :cascade do |t|
     t.string "title"
     t.string "status"
@@ -53,10 +64,12 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_28_220602) do
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_users_on_email"
+    # t.index ["email"], name: "index_users_on_email", unique: true
   end
 
   add_foreign_key "events", "hosts"
   add_foreign_key "hostings", "hosts"
   add_foreign_key "hostings", "users"
+  add_foreign_key "invitations", "events"
+  add_foreign_key "invitations", "users", column: "sent_by_id"
 end

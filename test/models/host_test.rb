@@ -231,21 +231,21 @@ class HostTest < ActiveSupport::TestCase
   end
 
   test "#remove_user raises Exception when called with a nonuser argument" do
-    assert_raises (Exception) { 
-      @base_host.remove_user({ type: "Non User" }) 
+    assert_raises (Exception) {
+      @base_host.remove_user({ type: "Non User" })
     }
   end
 
   test "#remove_user raises Exception when called with a User not in users" do
-    assert_raises (Exception) { 
-      @base_host.remove_user(@redmanes_user_2) 
+    assert_raises (Exception) {
+      @base_host.remove_user(@redmanes_user_2)
     }
   end
 
   test "#remove_user raises Exception when attempting to remove the final user" do
     @base_host.users.each do |user|
       if @base_host.users.count == 1
-        assert_raises(Exception){
+        assert_raises(Exception) {
           @base_host.remove_user(user)
         }
       else
@@ -253,5 +253,4 @@ class HostTest < ActiveSupport::TestCase
       end
     end
   end
-
 end
