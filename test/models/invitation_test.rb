@@ -54,4 +54,9 @@ class InvitationTest < ActiveSupport::TestCase
     invitation = Invitation.create(@valid_invitation_params)
     assert invitation.errors[:sent_by].include?("must exist")
   end
+
+  test "#Invitaions Event.invitations includes created invitaion" do
+      invitation = Invitation.create(@valid_invitation_params)
+      assert invitation.event.invitations.include?(invitation)
+  end
 end
