@@ -11,7 +11,6 @@ class InvitationTest < ActiveSupport::TestCase
     })
     @valid_invitation_params = {
       event: @join_the_recusents,
-      attending: false,
       max_guests: 0,
       sent_by: @rya
     }
