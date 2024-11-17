@@ -4,6 +4,8 @@ class User < ApplicationRecord
   has_many :hostings
   has_many :hosts, through: :hostings
 
+  has_many :sent_invitations, class_name: "Invitation", foreign_key: :sent_by
+
   before_save :downcase_email
 
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, presence: true, uniqueness: true
