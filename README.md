@@ -1,24 +1,68 @@
-# README
+# List of Endpoints - /api
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## __Merged:__
+___
 
-Things you may want to cover:
+### Todo's
 
-* Ruby version
+- __GET__
+  - /todos
+  - /todo/[id]
+- __POST__
+  - /todos
+- __PATCH__
+  - /todo/[id]
+- __DELETE__
+  - /todo/id
 
-* System dependencies
 
-* Configuration
+## __Awaiting Merge:__
+___
 
-* Database creation
+### __Users__
+- __GET__
+  - /users
+  - /user/[id]
+- __POST__
+  - /users
+- __PATCH__
+  - /user/[id]
+- __DELETE__
+  - /user/[id]
 
-* Database initialization
+### __Authentication__
+- __Login__
+  - /users/login
 
-* How to run the test suite
+### __Event__
+- __GET__
+  - /events
+  - /event/[id]
+- __POST__
+  - /events
+- __PATCH__
+  - /event/[id]
+- __DELETE__
+  - /event/[id]
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+### __Host__
+- __GET__
+  - /hosts
+  - /host/[id]
+- __POST__
+  - /hosts
+- __PATCH__
+  - /host/[id]
+- __DELETE__
+  - /host/[id]
+  
+### __Invitation__
+- __GET__
+  - /invitations
+  - /invitation/[id]
+- __POST__
+  - /invitations
+- __PATCH__
+  - /invitation/[id]
+- __DELETE__
+  - /invitation/[id]
