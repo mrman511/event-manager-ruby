@@ -59,5 +59,5 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
   gem "minitest"
-  gem "minitest-rails", "~> 7.1.1"
+  gem "minitest-rails", "~> 7.2.0"
 end
