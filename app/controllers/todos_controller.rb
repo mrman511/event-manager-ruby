@@ -18,6 +18,22 @@ class TodosController < ApplicationController
     end
   end
 
+  def update
+    todo = Todo.find(params[:id])
+    if todo and !permitted_params.empty?
+      todo.update!(permitted_params)
+      render json: todo, status: :accepted
+    else
+      render json: todo.errors, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    todo = Todo.find(params[:id])
+    todo.destroy
+    render json: { message: "Todo destroyed" }, status: :ok
+  end
+
   private
 
   def permitted_params
